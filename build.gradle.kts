@@ -1,3 +1,5 @@
+import de.undercouch.gradle.tasks.download.Download
+import de.undercouch.gradle.tasks.download.Verify
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
@@ -7,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.intelliJPlatform) // IntelliJ Platform Gradle Plugin
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
+    alias(libs.plugins.download)
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
 }
@@ -16,7 +19,7 @@ version = providers.gradleProperty("pluginVersion").get()
 
 // Set the JVM language level used to build the project.
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 // Configure project's dependencies
@@ -36,7 +39,7 @@ dependencies {
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
-        intellijIdea(providers.gradleProperty("platformVersion"))
+        phpstorm(providers.gradleProperty("platformVersion"))
 
         // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
@@ -155,4 +158,41 @@ intellijPlatformTesting {
             }
         }
     }
+}
+
+val drupalVersion = providers.gradleProperty("drupalVersion").get()
+val drupalTestDataDir = layout.projectDirectory.dir("src/test/testData/drupal")
+
+val downloadDrupal = tasks.register<Download>("downloadDrupal") {
+    src("https://ftp.drupal.org/files/projects/drupal-${drupalVersion}.tar.gz")
+    dest(layout.buildDirectory.file("tmp/drupal.tar.gz"))
+    overwrite(false)
+    onlyIfModified(true)
+}
+
+val verifyDrupal = tasks.register<Verify>("verifyDrupal") {
+    dependsOn(downloadDrupal)
+    src(downloadDrupal.get().dest)
+    algorithm("MD5")
+    checksum(providers.gradleProperty("drupalMD5").get())
+}
+
+val extractDrupal = tasks.register<Copy>("extractDrupal") {
+    dependsOn(verifyDrupal)
+    inputs.file(downloadDrupal.get().dest)
+    outputs.dir(drupalTestDataDir)
+    from(
+        tarTree(downloadDrupal.get().dest),
+        {
+            eachFile {
+                relativePath = RelativePath(true, *relativePath.segments.drop(1).toTypedArray())
+            }
+            includeEmptyDirs = false
+        },
+    )
+    into(drupalTestDataDir)
+}
+
+tasks.test {
+    dependsOn(extractDrupal)
 }

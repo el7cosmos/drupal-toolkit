@@ -1,0 +1,9 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <completion.contributor language="Twig"
+                                implementationClass="me.elabee.idea.drupal.template.DrupalTwigCompletionContributor"/>
+        <gotoDeclarationHandler implementation="me.elabee.idea.drupal.template.DrupalTwigGotoDeclarationHandler"/>
+        <lang.inspectionSuppressor language="Twig"
+                                   implementationClass="me.elabee.idea.drupal.template.DrupalTwigInspectionSuppressor"/>
+    </extensions>
+</idea-plugin>

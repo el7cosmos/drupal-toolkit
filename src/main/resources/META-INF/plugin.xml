@@ -5,7 +5,11 @@
     <vendor>el7cosmos</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.jetbrains.php</depends>
+    <depends>com.jetbrains.php.drupal</depends>
+    <depends optional="true" config-file="symfony.xml">fr.adrienbrault.idea.symfony2plugin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <fileBasedIndex implementation="me.elabee.idea.drupal.theme.DrupalComponentIndex"/>
     </extensions>
 </idea-plugin>
