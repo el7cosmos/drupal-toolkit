@@ -183,13 +183,12 @@ val extractDrupal = tasks.register<Copy>("extractDrupal") {
     outputs.dir(drupalTestDataDir)
     from(
         tarTree(downloadDrupal.get().dest),
-        {
-            eachFile {
-                relativePath = RelativePath(true, *relativePath.segments.drop(1).toTypedArray())
-            }
-            includeEmptyDirs = false
-        },
-    )
+    ) {
+        eachFile {
+            relativePath = RelativePath(true, *relativePath.segments.drop(1).toTypedArray())
+        }
+        includeEmptyDirs = false
+    }
     into(drupalTestDataDir)
 }
 
