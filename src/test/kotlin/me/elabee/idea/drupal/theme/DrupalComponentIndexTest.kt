@@ -1,8 +1,7 @@
-package me.elabee.idea.drupal.the
+package me.elabee.idea.drupal.theme
 
 import com.intellij.util.indexing.FileBasedIndex
 import me.elabee.idea.drupal.DrupalTestCase
-import me.elabee.idea.drupal.theme.DrupalComponentIndex
 
 class DrupalComponentIndexTest : DrupalTestCase() {
 
