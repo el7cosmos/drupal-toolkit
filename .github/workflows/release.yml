@@ -96,5 +96,6 @@ jobs:
           gh pr create \
             --title "Changelog update - \`$VERSION\`" \
             --body "Current pull request contains patched \`CHANGELOG.md\` file for the \`$VERSION\` version." \
-            --label "$LABEL" \
             --head $BRANCH
+
+          gh pr edit --add-label "$LABEL"
