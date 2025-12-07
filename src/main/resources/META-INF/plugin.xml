@@ -22,4 +22,8 @@
                          enabledByDefault="true"
                          level="WARNING"/>
     </extensions>
+
+    <extensions defaultExtensionNs="com.jetbrains.php">
+        <predefinedVariableProvider implementation="me.elabee.idea.drupal.lang.psi.DrupalPredefinedVariableProvider"/>
+    </extensions>
 </idea-plugin>
