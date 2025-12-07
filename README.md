@@ -42,6 +42,14 @@
 - Provide a goto symbol in twig files and in render array, allows ease of navigation by clicking the component's name.
 - Provide variables for slots and props in the component's Twig file.
 
+### Predefined variables
+
+Declare predefined variables in the following files:
+
+- `settings.php`: `$app_root`, `$site_path`
+
+---
+
 > [!NOTE]
 > **Drupal is a registered trademark of Dries Buytaert.**
 
