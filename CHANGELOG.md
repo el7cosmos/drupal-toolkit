@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Added
+
+- Provide `attributes` variable for twig files.
+- Provide `componentMetadata` variable for component's Twig file.
+
 ## [0.2.0] - 2025-12-13
 
 ### Added
