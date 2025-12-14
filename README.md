@@ -11,6 +11,7 @@
 ### Template
 
 - Provide twig namespace for twig files under `MODULE_NAME/templates` or `THEME_NAME/templates` directory
+- Provide `attributes` variable for twig files.
 
 ### Single Directory Component (SDC) Integration
 
@@ -31,6 +32,7 @@
 
 - Provide a goto symbol in twig files and in render array, allows ease of navigation by clicking the component's name.
 - Provide variables for slots and props in the component's Twig file.
+- Provide `componentMetadata` variable for component's Twig file.
 
 ### Predefined variables
 
