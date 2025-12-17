@@ -119,6 +119,14 @@ jobs:
           name: tests-result
           path: ${{ github.workspace }}/build/reports/tests
 
+      # Upload the jUnit report to CodeCov
+      - name: Upload Test Report
+        uses: codecov/codecov-action@v5
+        with:
+          directory: ${{ github.workspace }}/build/test-results/test
+          report_type: test_results
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       # Upload the Kover report to CodeCov
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v5
