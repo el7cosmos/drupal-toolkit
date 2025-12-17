@@ -1,6 +1,4 @@
-package me.elabee.idea.drupal.theme
-
-import me.elabee.idea.drupal.DrupalTestCase
+package me.elabee.idea.drupal
 
 abstract class DrupalComponentTestCase : DrupalTestCase() {
     companion object {
