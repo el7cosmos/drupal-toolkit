@@ -49,18 +49,24 @@ class DrupalComponentReferenceProvider : PsiReferenceProvider() {
 
         override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
             val project = element.project
+            val psiManager = PsiManager.getInstance(project)
             val index = FileBasedIndex.getInstance()
 
             // Find files that contain this component key
             val files = mutableListOf<ResolveResult>()
+
             index.processFilesContainingAllKeys(
                 DrupalIndexIds.component, listOf(componentKey), GlobalSearchScope.allScope(project), null,
             ) { yamlFile ->
+                psiManager.findFile(yamlFile)?.let { psiFile ->
+                    files.add(PsiElementResolveResult(psiFile))
+                }
+
                 val componentDir = yamlFile.parent
                 val componentName = yamlFile.nameWithoutExtension.removeSuffix(".component")
                 val twigFile = componentDir?.findChild("$componentName.twig") ?: return@processFilesContainingAllKeys true
 
-                PsiManager.getInstance(project).findFile(twigFile)?.let { psiFile ->
+                psiManager.findFile(twigFile)?.let { psiFile ->
                     files.add(PsiElementResolveResult(psiFile))
                 }
 
