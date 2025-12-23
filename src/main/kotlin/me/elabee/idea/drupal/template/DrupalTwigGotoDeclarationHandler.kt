@@ -42,9 +42,12 @@ class DrupalTwigGotoDeclarationHandler : GotoDeclarationHandler {
             DrupalIndexIds.component,
             setOf(sourceElement.text),
             Processor {
-                val twig = it.parent.findChild("$component.twig") ?: return@Processor true
-                val psiFile = twig.findPsiFile(sourceElement.project) ?: return@Processor true
-                elements.add(psiFile)
+                it.findPsiFile(sourceElement.project)?.let { psiFile ->
+                    elements.add(psiFile)
+                    psiFile.parent?.findFile("$component.twig")?.let { twigFile ->
+                        elements.add(twigFile)
+                    }
+                }
                 true
             },
             GlobalSearchScope.allScope(sourceElement.project),
