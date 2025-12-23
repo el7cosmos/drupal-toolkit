@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Resolves SDC's reference and declaration to both YAML and twig file
+
 ## [0.3.0] - 2025-12-14
 
 ### Added
