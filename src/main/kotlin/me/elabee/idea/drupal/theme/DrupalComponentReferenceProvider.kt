@@ -1,7 +1,9 @@
 package me.elabee.idea.drupal.theme
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.patterns.PatternCondition
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
@@ -18,7 +20,7 @@ import com.jetbrains.php.lang.parser.PhpElementTypes
 import com.jetbrains.php.lang.patterns.PhpPatterns
 import com.jetbrains.php.lang.psi.elements.ArrayHashElement
 import com.jetbrains.php.lang.psi.elements.StringLiteralExpression
-import icons.TwigIcons
+import me.elabee.idea.drupal.getIcon
 import me.elabee.idea.drupal.indexing.DrupalIndexIds
 
 class DrupalComponentReferenceProvider : PsiReferenceProvider() {
@@ -77,17 +79,23 @@ class DrupalComponentReferenceProvider : PsiReferenceProvider() {
 
         override fun getVariants(): Array<Any> {
             val project = element.project
-
+            val projectDir = project.guessProjectDir() ?: return emptyArray()
             val variants = mutableListOf<LookupElementBuilder>()
+            val index = FileBasedIndex.getInstance()
+            val psiManager = PsiManager.getInstance(project)
 
-            FileBasedIndex.getInstance().processAllKeys(
+            index.processAllKeys(
                 DrupalIndexIds.component,
                 { key ->
-                    variants.add(
-                        LookupElementBuilder.create(key).withIcon(TwigIcons.TwigFileIcon).bold(),
+                    index.getFilesWithKey(
+                        DrupalIndexIds.component, setOf(key),
+                        {
+                            val path = VfsUtil.getRelativePath(it.parent, projectDir)
+                            psiManager.findDirectory(it.parent) ?: return@getFilesWithKey true
+                            variants.add(LookupElementBuilder.create(key).withTailText(path).withIcon(it.parent.getIcon(psiManager)).bold())
+                        },
+                        GlobalSearchScope.allScope(project),
                     )
-
-                    true  // Continue processing
                 },
                 project,
             )
