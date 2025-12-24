@@ -7,6 +7,8 @@
 ### Changed
 
 - Resolves SDC's reference and declaration to both YAML and twig file
+- Change SDC's reference and lookup element to directory
+- Change SDC's reference and lookup element icon
 
 ## [0.3.0] - 2025-12-14
 
