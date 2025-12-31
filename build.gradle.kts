@@ -3,8 +3,6 @@ import de.undercouch.gradle.tasks.download.Verify
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import org.jlleitschuh.gradle.ktlint.KtlintExtension
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
   id("java") // Java support
@@ -123,13 +121,13 @@ changelog {
 
 // Configure Gradle Kover Plugin - read more: https://kotlin.github.io/kotlinx-kover/gradle-plugin/#configuration-details
 kover {
-    reports {
-        total {
-            xml {
-                onCheck = true
-            }
-        }
+  reports {
+    total {
+      xml {
+        onCheck = true
+      }
     }
+  }
 }
 
 tasks {
