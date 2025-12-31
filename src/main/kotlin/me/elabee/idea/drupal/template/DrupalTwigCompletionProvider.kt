@@ -22,73 +22,69 @@ import me.elabee.idea.drupal.getIcon
 import me.elabee.idea.drupal.indexing.DrupalIndexIds
 
 class DrupalTwigCompletionProvider : CompletionProvider<CompletionParameters>() {
-    companion object {
-        val key: Key<CachedValue<Set<TemplateLookupElement>>> = Key("DRUPAL_TWIG_COMPONENT_CACHE")
-    }
+  companion object {
+    val key: Key<CachedValue<Set<TemplateLookupElement>>> = Key("DRUPAL_TWIG_COMPONENT_CACHE")
+  }
 
-    override fun addCompletions(
-        parameters: CompletionParameters,
-        context: ProcessingContext,
-        result: CompletionResultSet,
-    ) {
-        result.addAllElements(getLookupElementsFromIndex(parameters.position.project))
-    }
+  override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+    result.addAllElements(getLookupElementsFromIndex(parameters.position.project))
+  }
 
-    private fun getLookupElementsFromIndex(project: Project): Set<TemplateLookupElement> {
-        val projectDir = project.guessProjectDir() ?: return emptySet()
-        val psiManager = PsiManager.getInstance(project)
+  private fun getLookupElementsFromIndex(project: Project): Set<TemplateLookupElement> {
+    val projectDir = project.guessProjectDir() ?: return emptySet()
+    val psiManager = PsiManager.getInstance(project)
 
-        return CachedValuesManager.getManager(project).getCachedValue(
-            project,
-            key,
-            {
-                val index = FileBasedIndex.getInstance()
-                val elements = mutableSetOf<TemplateLookupElement>()
+    return CachedValuesManager.getManager(project).getCachedValue(
+      project,
+      key,
+      {
+        val index = FileBasedIndex.getInstance()
+        val elements = mutableSetOf<TemplateLookupElement>()
 
-                index.processAllKeys(
-                    DrupalIndexIds.component,
-                    { name ->
-                        index.processFilesContainingAllKeys(
-                            DrupalIndexIds.component,
-                            setOf(name),
-                            GlobalSearchScope.allScope(project),
-                            null,
-                            Processor {
-                                elements.add(SdcLookupElement(name, it.parent, projectDir, psiManager))
-                                true
-                            },
-                        )
-                        true
-                    },
-                    project,
-                )
-
-                CachedValueProvider.Result.create(
-                    elements,
-                    ModificationTracker { index.getIndexModificationStamp(DrupalIndexIds.component, project) },
-                )
-            },
-            false,
+        index.processAllKeys(
+          DrupalIndexIds.component,
+          { name ->
+            index.processFilesContainingAllKeys(
+              DrupalIndexIds.component,
+              setOf(name),
+              GlobalSearchScope.allScope(project),
+              null,
+              Processor {
+                elements.add(SdcLookupElement(name, it.parent, projectDir, psiManager))
+                true
+              },
+            )
+            true
+          },
+          project,
         )
+
+        CachedValueProvider.Result.create(
+          elements,
+          ModificationTracker { index.getIndexModificationStamp(DrupalIndexIds.component, project) },
+        )
+      },
+      false,
+    )
+  }
+
+  private class SdcLookupElement : TemplateLookupElement {
+    private var psiManager: PsiManager
+    private var virtualFile: VirtualFile
+
+    constructor(templateName: String, virtualFile: VirtualFile, projectBaseDir: VirtualFile, psiManager: PsiManager) : super(
+      templateName,
+      virtualFile,
+      projectBaseDir,
+      true,
+    ) {
+      this.psiManager = psiManager
+      this.virtualFile = virtualFile
     }
 
-    private class SdcLookupElement : TemplateLookupElement {
-        private var psiManager: PsiManager
-        private var virtualFile: VirtualFile
-
-        constructor(templateName: String, virtualFile: VirtualFile, projectBaseDir: VirtualFile, psiManager: PsiManager) : super(
-            templateName,
-            virtualFile,
-            projectBaseDir,
-            true,
-        ) {
-            this.psiManager = psiManager
-            this.virtualFile = virtualFile
-        }
-
-        override fun renderElement(presentation: LookupElementPresentation) {
-            super.renderElement(presentation)
-            presentation.icon = virtualFile.getIcon(psiManager)
-        }
+    override fun renderElement(presentation: LookupElementPresentation) {
+      super.renderElement(presentation)
+      presentation.icon = virtualFile.getIcon(psiManager)
     }
+  }
 }
