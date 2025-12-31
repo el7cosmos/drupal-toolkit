@@ -14,45 +14,45 @@ import fr.adrienbrault.idea.symfony2plugin.templating.TwigPattern
 import me.elabee.idea.drupal.indexing.DrupalIndexIds
 
 class DrupalTwigGotoDeclarationHandler : GotoDeclarationHandler {
-    override fun getGotoDeclarationTargets(sourceElement: PsiElement?, offset: Int, editor: Editor?): Array<PsiElement> {
-        if (sourceElement == null) {
-            return emptyArray()
-        }
-
-        val pattern = PlatformPatterns.or(
-            TwigPattern.getTemplateFileReferenceTagPattern(),
-            TwigPattern.getTagTernaryPattern(TwigElementTypes.EXTENDS_TAG),
-            TwigPattern.getPrintBlockOrTagFunctionPattern("include", "source"),
-            TwigPattern.getIncludeTagArrayPattern(),
-            TwigPattern.getTagTernaryPattern(TwigElementTypes.INCLUDE_TAG),
-        )
-        if (!pattern.accepts(sourceElement)) {
-            return emptyArray()
-        }
-
-        val split = sourceElement.text.split(":")
-        if (split.count() != 2) {
-            return emptyArray()
-        }
-
-        val (_, component) = split
-        val elements = mutableListOf<PsiFile>()
-
-        FileBasedIndex.getInstance().getFilesWithKey(
-            DrupalIndexIds.component,
-            setOf(sourceElement.text),
-            Processor {
-                it.findPsiFile(sourceElement.project)?.let { psiFile ->
-                    elements.add(psiFile)
-                    psiFile.parent?.findFile("$component.twig")?.let { twigFile ->
-                        elements.add(twigFile)
-                    }
-                }
-                true
-            },
-            GlobalSearchScope.allScope(sourceElement.project),
-        )
-
-        return elements.toTypedArray()
+  override fun getGotoDeclarationTargets(sourceElement: PsiElement?, offset: Int, editor: Editor?): Array<PsiElement> {
+    if (sourceElement == null) {
+      return emptyArray()
     }
+
+    val pattern = PlatformPatterns.or(
+      TwigPattern.getTemplateFileReferenceTagPattern(),
+      TwigPattern.getTagTernaryPattern(TwigElementTypes.EXTENDS_TAG),
+      TwigPattern.getPrintBlockOrTagFunctionPattern("include", "source"),
+      TwigPattern.getIncludeTagArrayPattern(),
+      TwigPattern.getTagTernaryPattern(TwigElementTypes.INCLUDE_TAG),
+    )
+    if (!pattern.accepts(sourceElement)) {
+      return emptyArray()
+    }
+
+    val split = sourceElement.text.split(":")
+    if (split.count() != 2) {
+      return emptyArray()
+    }
+
+    val (_, component) = split
+    val elements = mutableListOf<PsiFile>()
+
+    FileBasedIndex.getInstance().getFilesWithKey(
+      DrupalIndexIds.component,
+      setOf(sourceElement.text),
+      Processor {
+        it.findPsiFile(sourceElement.project)?.let { psiFile ->
+          elements.add(psiFile)
+          psiFile.parent?.findFile("$component.twig")?.let { twigFile ->
+            elements.add(twigFile)
+          }
+        }
+        true
+      },
+      GlobalSearchScope.allScope(sourceElement.project),
+    )
+
+    return elements.toTypedArray()
+  }
 }

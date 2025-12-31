@@ -20,55 +20,55 @@ import org.jetbrains.yaml.psi.YamlPsiElementVisitor
 import java.util.Collections
 
 class DrupalExtensionIndex : FileBasedIndexExtension<String, String>() {
-    override fun getName(): ID<String, String> = DrupalIndexIds.extension
+  override fun getName(): ID<String, String> = DrupalIndexIds.extension
 
-    override fun getInputFilter(): FileBasedIndex.InputFilter =
-        FileBasedIndex.InputFilter { it.fileType is YAMLFileType && FileUtilRt.extensionEquals(it.nameWithoutExtension, "info") }
+  override fun getInputFilter(): FileBasedIndex.InputFilter =
+    FileBasedIndex.InputFilter { it.fileType is YAMLFileType && FileUtilRt.extensionEquals(it.nameWithoutExtension, "info") }
 
-    override fun dependsOnFileContent(): Boolean = true
+  override fun dependsOnFileContent(): Boolean = true
 
-    override fun getIndexer(): DataIndexer<String, String, FileContent> = DrupalExtensionIndexDataIndexer
+  override fun getIndexer(): DataIndexer<String, String, FileContent> = DrupalExtensionIndexDataIndexer
 
-    override fun getKeyDescriptor(): KeyDescriptor<String> = EnumeratorStringDescriptor.INSTANCE
+  override fun getKeyDescriptor(): KeyDescriptor<String> = EnumeratorStringDescriptor.INSTANCE
 
-    override fun getValueExternalizer(): DataExternalizer<String> = EnumeratorStringDescriptor.INSTANCE
+  override fun getValueExternalizer(): DataExternalizer<String> = EnumeratorStringDescriptor.INSTANCE
 
-    override fun getVersion(): Int = 1
+  override fun getVersion(): Int = 1
 
-    private object DrupalExtensionIndexDataIndexer : DataIndexer<String, String, FileContent> {
-        val userDataKey = Key<String>("me.elabee.idea.drupal.core.extension.type")
+  private object DrupalExtensionIndexDataIndexer : DataIndexer<String, String, FileContent> {
+    val userDataKey = Key<String>("me.elabee.idea.drupal.core.extension.type")
 
-        override fun map(inputData: FileContent): Map<String?, String?> {
-            if (!DrupalFeatureUsageProvider().isEnabled(inputData.project)) {
-                return emptyMap()
-            }
+    override fun map(inputData: FileContent): Map<String?, String?> {
+      if (!DrupalFeatureUsageProvider().isEnabled(inputData.project)) {
+        return emptyMap()
+      }
 
-            val psiFile = inputData.psiFile as YAMLFile
+      val psiFile = inputData.psiFile as YAMLFile
 
-            psiFile.documents.forEach { it.accept(DrupalExtensionIndexElementVisitor) }
-            val type = psiFile.getUserData(userDataKey) ?: return emptyMap()
-            return Collections.singletonMap(type, FileUtilRt.getNameWithoutExtension(inputData.file.nameWithoutExtension))
-        }
+      psiFile.documents.forEach { it.accept(DrupalExtensionIndexElementVisitor) }
+      val type = psiFile.getUserData(userDataKey) ?: return emptyMap()
+      return Collections.singletonMap(type, FileUtilRt.getNameWithoutExtension(inputData.file.nameWithoutExtension))
+    }
+  }
+
+  private object DrupalExtensionIndexElementVisitor : YamlPsiElementVisitor() {
+    override fun visitDocument(document: YAMLDocument) {
+      document.topLevelValue?.accept(this)
     }
 
-    private object DrupalExtensionIndexElementVisitor : YamlPsiElementVisitor() {
-        override fun visitDocument(document: YAMLDocument) {
-            document.topLevelValue?.accept(this)
-        }
+    override fun visitMapping(mapping: YAMLMapping) {
+      val extensionPackage = mapping.getKeyValueByKey("package")?.valueText
+      if (extensionPackage != null && arrayOf("Testing", "test").any { it.equals(extensionPackage, true) }) {
+        return
+      }
 
-        override fun visitMapping(mapping: YAMLMapping) {
-            val extensionPackage = mapping.getKeyValueByKey("package")?.valueText
-            if (extensionPackage != null && arrayOf("Testing", "test").any { it.equals(extensionPackage, true) }) {
-                return
-            }
+      val hidden = mapping.getKeyValueByKey("hidden")?.valueText
+      if (hidden != null && arrayOf("true", "on", "yes").any { it.equals(hidden, true) }) {
+        return
+      }
 
-            val hidden = mapping.getKeyValueByKey("hidden")?.valueText
-            if (hidden != null && arrayOf("true", "on", "yes").any { it.equals(hidden, true) }) {
-                return
-            }
-
-            val type = mapping.getKeyValueByKey("type") ?: return
-            mapping.containingFile.putUserData(DrupalExtensionIndexDataIndexer.userDataKey, type.valueText)
-        }
+      val type = mapping.getKeyValueByKey("type") ?: return
+      mapping.containingFile.putUserData(DrupalExtensionIndexDataIndexer.userDataKey, type.valueText)
     }
+  }
 }

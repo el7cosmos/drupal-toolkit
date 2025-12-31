@@ -5,10 +5,10 @@ import me.elabee.idea.drupal.DrupalComponentTestCase
 import me.elabee.idea.drupal.indexing.DrupalIndexIds
 
 class DrupalComponentIndexTest : DrupalComponentTestCase() {
-    fun `test component index`() {
-        val fileBasedIndex = FileBasedIndex.getInstance()
-        val keys = fileBasedIndex.getAllKeys(DrupalIndexIds.component, project)
-        assertNotEmpty(keys)
-        assertContainsElements(keys, COMPONENTS)
-    }
+  fun `test component index`() {
+    val fileBasedIndex = FileBasedIndex.getInstance()
+    val keys = fileBasedIndex.getAllKeys(DrupalIndexIds.component, project)
+    assertNotEmpty(keys)
+    assertContainsElements(keys, COMPONENTS)
+  }
 }

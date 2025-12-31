@@ -7,17 +7,17 @@ import com.jetbrains.twig.elements.TwigElementTypes
 import fr.adrienbrault.idea.symfony2plugin.templating.TwigPattern
 
 class DrupalTwigCompletionContributor : CompletionContributor() {
-    init {
-        extend(
-            CompletionType.BASIC,
-            PlatformPatterns.or(
-                TwigPattern.getTemplateFileReferenceTagPattern(),
-                TwigPattern.getTagTernaryPattern(TwigElementTypes.EXTENDS_TAG),
-                TwigPattern.getPrintBlockOrTagFunctionPattern("include", "source"),
-                TwigPattern.getIncludeTagArrayPattern(),
-                TwigPattern.getTagTernaryPattern(TwigElementTypes.INCLUDE_TAG),
-            ),
-            DrupalTwigCompletionProvider(),
-        )
-    }
+  init {
+    extend(
+      CompletionType.BASIC,
+      PlatformPatterns.or(
+        TwigPattern.getTemplateFileReferenceTagPattern(),
+        TwigPattern.getTagTernaryPattern(TwigElementTypes.EXTENDS_TAG),
+        TwigPattern.getPrintBlockOrTagFunctionPattern("include", "source"),
+        TwigPattern.getIncludeTagArrayPattern(),
+        TwigPattern.getTagTernaryPattern(TwigElementTypes.INCLUDE_TAG),
+      ),
+      DrupalTwigCompletionProvider(),
+    )
+  }
 }

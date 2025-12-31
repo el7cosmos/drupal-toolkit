@@ -54,6 +54,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
+      - run: ./gradlew ktlintCheck
+
       # Build plugin
       - name: Build plugin
         run: ./gradlew buildPlugin

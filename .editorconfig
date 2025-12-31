@@ -1,16 +1,49 @@
 root = true
 
 [*]
-insert_final_newline = true
-
-[*.{kt,kts}]
 end_of_line = lf
-ij_kotlin_allow_trailing_comma = true
-ij_kotlin_allow_trailing_comma_on_call_site = true
-ij_kotlin_imports_layout = *, java.**, javax.**, kotlin.**, ^
-ij_kotlin_indent_before_arrow_on_new_line = false
-ij_kotlin_line_break_after_multiline_when_entry = true
-ij_kotlin_packages_to_use_import_on_demand = unset
-indent_size = 4
 indent_style = space
+indent_size = 2
+insert_final_newline = true
+ij_continuation_indent_size = 2
 max_line_length = 140
+tab_width = 2
+
+ij_any_else_on_new_line = true
+ij_any_catch_on_new_line = true
+ij_any_finally_on_new_line = true
+ij_any_block_comment_at_first_column = false
+ij_any_line_comment_at_first_column = false
+
+;======Kotlin=====
+[{*.kt,*.kts}]
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
+
+ij_kotlin_else_on_new_line = true
+ij_kotlin_while_on_new_line = true
+ij_kotlin_catch_on_new_line = true
+ij_kotlin_finally_on_new_line = true
+ij_kotlin_line_break_after_multiline_when_entry = false
+
+; should break, but it is not configurable for now
+ij_kotlin_align_multiline_binary_operation = true
+
+ij_kotlin_align_multiline_parameters_in_calls = true
+ij_kotlin_align_multiline_extends_list = true
+
+; so that a comma is appended to the multiline function parameter list
+ij_kotlin_allow_trailing_comma = true
+
+; the official styleguide forces newlines and we don't want to reformat the whole repo
+ij_kotlin_call_parameters_right_paren_on_new_line = unset
+ij_kotlin_call_parameters_new_line_after_left_paren = unset
+ij_kotlin_if_rparen_on_new_line = unset
+
+; ktlint
+ktlint_class_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than = unset
+ktlint_function_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than = unset
+ktlint_standard_multiline-expression-wrapping = disabled
+;=====Kotlin=====
+
+[{*Test.kt,*TestCase.kt}]
+ktlint_standard_function-naming = disabled

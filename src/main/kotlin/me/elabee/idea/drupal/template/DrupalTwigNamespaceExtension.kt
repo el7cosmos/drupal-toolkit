@@ -6,12 +6,11 @@ import fr.adrienbrault.idea.symfony2plugin.extension.TwigNamespaceExtensionParam
 import fr.adrienbrault.idea.symfony2plugin.templating.path.TwigPath
 
 class DrupalTwigNamespaceExtension : TwigNamespaceExtension {
-    override fun getNamespaces(parameter: TwigNamespaceExtensionParameter): Collection<TwigPath> {
-        return CachedValuesManager.getManager(parameter.project).getCachedValue(
-            parameter.project,
-            DrupalTwigNamespaceCachedValueProvider.key,
-            DrupalTwigNamespaceCachedValueProvider(parameter.project),
-            false,
-        )
-    }
+  override fun getNamespaces(parameter: TwigNamespaceExtensionParameter): Collection<TwigPath> =
+    CachedValuesManager.getManager(parameter.project).getCachedValue(
+      parameter.project,
+      DrupalTwigNamespaceCachedValueProvider.key,
+      DrupalTwigNamespaceCachedValueProvider(parameter.project),
+      false,
+    )
 }
