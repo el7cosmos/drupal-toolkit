@@ -6,12 +6,12 @@ import me.elabee.idea.drupal.DrupalTestCase
 import me.elabee.idea.drupal.indexing.DrupalIndexIds
 
 class DrupalExtensionIndexTest : DrupalTestCase() {
-    fun `test extension index`() {
-        myFixture.copyFileToProject("drupal/core/modules/system/system.info.yml")
+  fun `test extension index`() {
+    myFixture.copyFileToProject("drupal/core/modules/system/system.info.yml")
 
-        val fileBasedIndex = FileBasedIndex.getInstance()
-        val values = fileBasedIndex.getValues(DrupalIndexIds.extension, "module", GlobalSearchScope.allScope(project))
-        assertNotEmpty(values)
-        assertContainsElements(values, "system")
-    }
+    val fileBasedIndex = FileBasedIndex.getInstance()
+    val values = fileBasedIndex.getValues(DrupalIndexIds.extension, "module", GlobalSearchScope.allScope(project))
+    assertNotEmpty(values)
+    assertContainsElements(values, "system")
+  }
 }
