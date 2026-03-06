@@ -1,6 +1,7 @@
 package me.elabee.idea.drupal.theme
 
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.DataIndexer
@@ -77,6 +78,8 @@ class DrupalComponentIndex : FileBasedIndexExtension<String, DrupalComponentMeta
         val props = extractProps(topValue)
 
         return Collections.singletonMap("$extensionName:$componentName", DrupalComponentMetadata(slots, props))
+      } catch (e: ProcessCanceledException) {
+        throw e // Always rethrow — this is IntelliJ's cancellation signal
       } catch (e: Exception) {
         thisLogger().error(e)
       }
