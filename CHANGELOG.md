@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+- Adopt intellij platform code style
+- Rethrow ProcessCanceledException in DataIndexer
+
 ## [0.3.1] - 2025-12-24
 
 ### Changed
