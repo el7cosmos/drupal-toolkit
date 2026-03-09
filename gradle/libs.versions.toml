@@ -9,7 +9,7 @@ download = "5.6.0"
 intelliJPlatform = "2.10.5"
 ktlint = "14.0.1"
 kotlin = "2.3.0"
-kover = "0.9.4"
+kover = "0.9.7"
 qodana = "2025.2.3"
 
 [libraries]
