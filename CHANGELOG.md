@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- Fix Symfony plugin compatibility
+
 ## [0.3.2] - 2026-03-07
 
 - Adopt intellij platform code style
