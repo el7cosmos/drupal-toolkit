@@ -1,5 +1,7 @@
 package me.elabee.idea.drupal.template
 
+import com.intellij.testFramework.EditorTestUtil
+import com.jetbrains.twig.TwigFileType
 import fr.adrienbrault.idea.symfony2plugin.Settings
 import me.elabee.idea.drupal.DrupalTestCase
 
@@ -22,5 +24,31 @@ class DrupalTwigVariableCollectorTest : DrupalTestCase() {
     myFixture.completeBasic()
     assertNotNull(myFixture.lookupElementStrings)
     assertContainsElements(myFixture.lookupElementStrings!!, "attributes", "componentMetadata", "baz")
+
+    myFixture.type("componentMetadata.")
+    myFixture.completeBasic()
+    assertNotNull(myFixture.lookupElementStrings)
+    assertContainsElements(
+      myFixture.lookupElementStrings!!,
+      "path",
+      "documentation",
+      "status",
+      "machineName",
+      "name",
+      "group",
+      "schema",
+      "description",
+      "mandatorySchemas",
+      "slots",
+      "thumbnailPath",
+      "normalize",
+    )
+  }
+
+  fun `test variable collector with attributes variable`() {
+    myFixture.configureByText(TwigFileType.INSTANCE, "{{ attributes.${EditorTestUtil.CARET_TAG} }}")
+    myFixture.completeBasic()
+    assertNotNull(myFixture.lookupElementStrings)
+    assertContainsElements(myFixture.lookupElementStrings!!, "addClass", "removeAttribute", "removeClass")
   }
 }

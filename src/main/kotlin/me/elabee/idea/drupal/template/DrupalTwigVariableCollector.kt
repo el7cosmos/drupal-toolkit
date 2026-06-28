@@ -20,20 +20,18 @@ class DrupalTwigVariableCollector : TwigFileVariableCollector {
   override fun collectPsiVariables(parameter: TwigFileVariableCollectorParameter, variables: MutableMap<String, PsiVariable>) {
     val phpIndex = PhpIndex.getInstance(parameter.project)
 
-    val attributeVariable = PsiVariable()
+    val attributeVariable = HashSet<String>()
     phpIndex.getClassesByFQN("\\Drupal\\Core\\Template\\Attribute").forEach {
-      attributeVariable.addType(it.fqn)
-      attributeVariable.addElements(it)
+      attributeVariable.add(it.fqn)
     }
-    variables["attributes"] = attributeVariable
+    variables["attributes"] = PsiVariable(attributeVariable)
 
     val twigFile = parameter.element.containingFile
     (twigFile.parent ?: return).findFile("${twigFile.virtualFile.nameWithoutExtension}.component.yml") ?: return
-    val metadataVariable = PsiVariable()
+    val metadataVariable = HashSet<String>()
     phpIndex.getClassesByFQN("\\Drupal\\Core\\Theme\\Component\\ComponentMetadata").forEach {
-      metadataVariable.addType(it.fqn)
-      metadataVariable.addElements(it)
+      metadataVariable.add(it.fqn)
     }
-    variables["componentMetadata"] = metadataVariable
+    variables["componentMetadata"] = PsiVariable(metadataVariable)
   }
 }
